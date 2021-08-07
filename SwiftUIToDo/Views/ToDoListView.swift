@@ -70,21 +70,37 @@ struct SheetView: View {
     //@Binding var items: [String]
     //@EnvironmentObject private var todoListViewModel: ToDoListViewModel
     @ObservedObject var todoListViewModelForObservedObject: ToDoListViewModel
+    @State private var isBlank = false
     
     var body: some View {
-        VStack {
-            TextField("todo", text: $text)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            Text(text)
-
-            Button("Press to dismiss") {
-                todoListViewModelForObservedObject.items.append(text)
-                //todoListViewModel.items.append(text)
-                presentationMode.wrappedValue.dismiss()
+        NavigationView {
+            VStack {
+                Spacer()
+                TextField("todo", text: $text)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding(8)
+                HStack {
+                    Spacer()
+                    Button("追加") {
+                        todoListViewModelForObservedObject.items.append(text)
+                        //todoListViewModel.items.append(text)
+                        if text.isEmpty {
+                            self.isBlank = true
+                        } else {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }
+                    .frame(width: 100, height: 40)
+                    .foregroundColor(.white)
+                    .background(Color.gray)
+                    .cornerRadius(8)
+                    .padding()
+                    .alert(isPresented: $isBlank, content: {
+                        Alert(title: Text("入力してください。"))
+                    })
+                }
             }
-            .font(.title)
-            .padding()
-            .background(Color.black)
+            .navigationBarTitle("タスク作成", displayMode: .inline)
         }
     }
 }
