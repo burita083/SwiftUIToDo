@@ -49,8 +49,8 @@ struct ToDoListView: View {
             
             .sheet(isPresented: $isShown) {
                 //SheetView(items: $todoListViewModel.items)
-                SheetView()
-                    .environmentObject(todoListViewModel)
+                SheetView(todoListViewModelForObservedObject: todoListViewModel)
+                    //.environmentObject(todoListViewModel)
             }
         }
     }
@@ -68,7 +68,8 @@ struct SheetView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var text = ""
     //@Binding var items: [String]
-    @EnvironmentObject private var todoListViewModel: ToDoListViewModel
+    //@EnvironmentObject private var todoListViewModel: ToDoListViewModel
+    @ObservedObject var todoListViewModelForObservedObject: ToDoListViewModel
     
     var body: some View {
         VStack {
@@ -77,7 +78,8 @@ struct SheetView: View {
             Text(text)
 
             Button("Press to dismiss") {
-                todoListViewModel.items.append(text)
+                todoListViewModelForObservedObject.items.append(text)
+                //todoListViewModel.items.append(text)
                 presentationMode.wrappedValue.dismiss()
             }
             .font(.title)
