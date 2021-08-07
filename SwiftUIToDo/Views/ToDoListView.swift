@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ToDoListView: View {
-    @ObservedObject private var todoListViewModel = ToDoListViewModel()
+    @StateObject private var todoListViewModel = ToDoListViewModel()
     
     @State private var isShown = false
     var body: some View {
@@ -48,7 +48,9 @@ struct ToDoListView: View {
             }
             
             .sheet(isPresented: $isShown) {
+                //SheetView(items: $todoListViewModel.items)
                 SheetView()
+                    .environmentObject(todoListViewModel)
             }
         }
     }
@@ -64,13 +66,23 @@ struct ToDoListView_Previews: PreviewProvider {
 
 struct SheetView: View {
     @Environment(\.presentationMode) var presentationMode
+    @State private var text = ""
+    //@Binding var items: [String]
+    @EnvironmentObject private var todoListViewModel: ToDoListViewModel
     
     var body: some View {
-        Button("Press to dismiss") {
-            presentationMode.wrappedValue.dismiss()
+        VStack {
+            TextField("todo", text: $text)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            Text(text)
+
+            Button("Press to dismiss") {
+                todoListViewModel.items.append(text)
+                presentationMode.wrappedValue.dismiss()
+            }
+            .font(.title)
+            .padding()
+            .background(Color.black)
         }
-        .font(.title)
-        .padding()
-        .background(Color.black)
     }
 }
