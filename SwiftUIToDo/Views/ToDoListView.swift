@@ -82,11 +82,11 @@ struct SheetView: View {
                 HStack {
                     Spacer()
                     Button("追加") {
-                        todoListViewModelForObservedObject.items.append(text)
                         //todoListViewModel.items.append(text)
                         if text.isEmpty {
                             self.isBlank = true
                         } else {
+                            todoListViewModelForObservedObject.items.append(text)
                             presentationMode.wrappedValue.dismiss()
                         }
                     }
